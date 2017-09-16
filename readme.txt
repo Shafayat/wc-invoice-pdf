@@ -24,16 +24,15 @@ This WooCommerce plugin automatically generates invoice PDFs, attaches PDF with 
 - Show order date, status in invoices.
 - Custom seller's message at the bottom of the PDF
 
-> **WooCommerce PDF Invoices Premium**<br /><br />
-> Premium version comes with these features:<br /><br />
-> - Change between beautiful templates.<br />
-> - Let customers decide whether they want a PDF attached to their emails or not.<br />
-> - Change fonts to your liking.<br />
-> - Show/Hide store address in invoices.<br />
-> - Add a store logo on top of the invoice and resize to fit.<br />
-> - Bulk download PDF invoices<br />
-> - Clear cache anytime to free up memories.<br />
-> [Get the premium version >>](http://wpeden.com)
+=Premium version comes with these features:=
+- Change between beautiful templates.<br />
+- Let customers decide whether they want a PDF attached to their emails or not.<br />
+- Change fonts to your liking.<br />
+- Show/Hide store address in invoices.<br />
+- Add a store logo on top of the invoice and resize to fit.<br />
+- Bulk download PDF invoices<br />
+- Clear cache anytime to free up memories.<br />
+[Get the premium version >>](http://wpeden.com)
 
 #### Contributing
 

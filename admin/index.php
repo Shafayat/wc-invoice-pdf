@@ -22,12 +22,6 @@ $order = new WC_Order( 479 );
 
 $settings = get_option( 'wpe_invoice_pdf_settings' );
 
-if ( isset( $settings['attach_with'] ) && $settings['attach_with'] == 1 ) {
-
-	echo 'op';
-}
-
-
 ?>
 <style>
     select, option, input[type="text"] {

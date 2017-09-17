@@ -97,7 +97,7 @@ class WpeWcInvoicePdf {
 		$order_id = $order->get_id();
 		if ( $order->has_status( 'processing' ) || $order->has_status( 'completed' ) ) {
 			$actions['name'] = array(
-				'url'    => '/wordpress/download-pdf-invoice?order_id=' . $order_id,
+				'url'    => get_site_url() . '/download-pdf-invoice?order_id=' . $order_id,
 				'name'   => 'Invoice',
 				'action' => "invoice view",
 			);
@@ -172,11 +172,11 @@ class WpeWcInvoicePdf {
 		$output = $dompdf->output();
 		if ( $type === 'temp' ) {
 
-			wp_mkdir_p( ABSPATH . 'wp-content/uploads/wpe-temp-invoices/' );
-			file_put_contents( ABSPATH . 'wp-content/uploads/wpe-temp-invoices/' . $order_id . '-invoice.pdf', $output );
+			wp_mkdir_p( WP_CONTENT_DIR . '/uploads/wpe-temp-invoices/' );
+			file_put_contents( WP_CONTENT_DIR . '/uploads/wpe-temp-invoices/' . $order_id . '-invoice.pdf', $output );
 		} else {
-			wp_mkdir_p( ABSPATH . 'wp-content/uploads/wpe-invoices/' );
-			file_put_contents( ABSPATH . 'wp-content/uploads/wpe-invoices/' . $order_id . '-invoice.pdf', $output );
+			wp_mkdir_p( WP_CONTENT_DIR . '/uploads/wpe-invoices/' );
+			file_put_contents( WP_CONTENT_DIR . '/uploads/wpe-invoices/' . $order_id . '-invoice.pdf', $output );
 		}
 	}
 
@@ -185,14 +185,14 @@ class WpeWcInvoicePdf {
 	 */
 	public function wpe_invoice_download() {
 
-		if ( strpos( $_SERVER["REQUEST_URI"], '/wordpress/download-pdf-invoice' ) !== false ) {
+		if ( strpos( $_SERVER["REQUEST_URI"], '/download-pdf-invoice' ) !== false ) {
 
 			if ( ! isset( $_REQUEST['order_id'] ) ) {
 				exit();
 			}
 			$order_id = $_REQUEST['order_id'];
 
-			$file = ABSPATH . 'wp-content/uploads/wpe-invoices/' . $order_id . '-invoice.pdf';
+			$file = WP_CONTENT_DIR . '/uploads/wpe-invoices/' . $order_id . '-invoice.pdf';
 			if ( ! file_exists( $file ) ) {
 				$this->create_and_save_pdf( $order_id );
 			}
@@ -237,7 +237,7 @@ class WpeWcInvoicePdf {
 
 			$order_id = $order->get_id();
 
-			$file = ABSPATH . 'wp-content/uploads/wpe-invoices/' . $order_id . '-invoice.pdf';
+			$file = WP_CONTENT_DIR . '/uploads/wpe-invoices/' . $order_id . '-invoice.pdf';
 			if ( ! file_exists( $file ) ) {
 				$this->create_and_save_pdf( $order_id );
 			}

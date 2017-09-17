@@ -54,7 +54,7 @@ class WpeWcInvoicePdf {
 	 */
 	public function clear_pdf_cache() {
 
-		$dir = ABSPATH . 'wp-content/uploads/wpe-invoices';
+		$dir = WP_CONTENT_DIR . '/uploads/wpe-invoices';
 		if ( file_exists( $dir ) ) {
 			foreach ( scandir( $dir ) as $file ) {
 				if ( '.' === $file || '..' === $file ) {

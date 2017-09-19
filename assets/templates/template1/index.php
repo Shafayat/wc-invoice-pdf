@@ -170,18 +170,19 @@ $customer_country  = $order->get_shipping_country() ? $order->get_shipping_count
 <body>
 <header class="clearfix">
 
-    <h1>INVOICE <?php echo $order->get_order_number(); ?></h1>
+    <h1>INVOICE <?php echo esc_attr( $order->get_order_number() ); ?></h1>
 
     <div id="project">
-        <div><span>TO</span> <?php echo $customer_name; ?></div>
+        <div><span>TO</span> <?php echo esc_attr( $customer_name ); ?></div>
         <div>
-            <span>ADDRESS</span> <?php echo $customer_address1 . ',' . $customer_state . ' ' . $customer_postcode . ',' . $customer_country ?>
+            <span>ADDRESS</span> <?php echo esc_attr( $customer_address1 . ',' . $customer_state . ' ' . $customer_postcode . ',' . $customer_country ) ?>
         </div>
         <div><span>EMAIL</span>
-            <a href="mailto:<?php echo $user->user_email; ?>"><?php echo $user->user_email; ?></a>
+            <a href="mailto:<?php echo esc_attr( $user->user_email ); ?>"><?php echo esc_attr( $user->user_email ); ?></a>
         </div>
-        <div><span>DATE</span> <?php echo date( "F j, Y", strtotime( $order->get_date_created() ) ); ?></div>
-        <div><span>STATUS</span> <?php echo ucfirst( $order->get_status() ); ?></div>
+        <div><span>DATE</span> <?php echo esc_attr( date( "F j, Y", strtotime( $order->get_date_created() ) ) ); ?>
+        </div>
+        <div><span>STATUS</span> <?php echo esc_attr( ucfirst( $order->get_status() ) ); ?></div>
     </div>
 </header>
 <main>
@@ -213,7 +214,7 @@ $customer_country  = $order->get_shipping_country() ? $order->get_shipping_count
 					$is_visible = $product && $product->is_visible();
 
 					//print_r($item);
-					echo $item->get_name();
+					echo esc_attr( $item->get_name() );
 					$metaInd = 0;
 					if ( isset( $settings['show_addon'] ) && $settings['show_addon'] == 1 ) {
 						foreach ( $item->get_formatted_meta_data() as $meta_id => $meta ) {
@@ -233,7 +234,7 @@ $customer_country  = $order->get_shipping_country() ? $order->get_shipping_count
 					?>
                 </td>
                 <td class="unit">
-					<?php echo $currency_symbol . round( $order->get_item_subtotal( $item ) / $item->get_quantity(), 2 ); ?>
+					<?php echo esc_attr( $currency_symbol . round( $order->get_item_subtotal( $item ) / $item->get_quantity(), 2 ) ); ?>
                 </td>
 
                 <td class="qty">
@@ -241,7 +242,7 @@ $customer_country  = $order->get_shipping_country() ? $order->get_shipping_count
                 </td>
 
                 <td class="total">
-					<?php echo $currency_symbol . $order->get_item_subtotal( $item ) . '&nbsp;'; ?>
+					<?php echo esc_attr( $currency_symbol . $order->get_item_subtotal( $item ) ) . '&nbsp;'; ?>
                 </td>
 
             </tr>
@@ -253,19 +254,19 @@ $customer_country  = $order->get_shipping_country() ? $order->get_shipping_count
 
         <tr>
             <td colspan="3">SUBTOTAL</td>
-            <td class="total "><?php echo $currency_symbol . round( $order->get_subtotal(), 2 ) ?></td>
+            <td class="total "><?php echo esc_attr( $currency_symbol . round( $order->get_subtotal(), 2 ) ) ?></td>
         </tr>
         <tr>
             <td colspan="3">VAT</td>
-            <td class="total"><?php echo $currency_symbol . round( $order->get_cart_tax(), 2 ) ?></td>
+            <td class="total"><?php echo esc_attr( $currency_symbol . round( $order->get_cart_tax(), 2 ) ) ?></td>
         </tr>
         <tr>
             <td colspan="3">SHIPPING</td>
-            <td class="total"><?php echo $currency_symbol . round( $order->get_shipping_total(), 2 ) ?></td>
+            <td class="total"><?php echo esc_attr( $currency_symbol . round( $order->get_shipping_total(), 2 ) ) ?></td>
         </tr>
         <tr>
             <td colspan="3" class="grand total">GRAND TOTAL</td>
-            <td class="grand total"><?php echo $currency_symbol . round( $order->get_total(), 2 ) ?></td>
+            <td class="grand total"><?php echo esc_attr( $currency_symbol . round( $order->get_total(), 2 ) ) ?></td>
         </tr>
 
         </tbody>
@@ -274,14 +275,16 @@ $customer_country  = $order->get_shipping_country() ? $order->get_shipping_count
     <div id="notices">
 		<?php if ( isset( $settings['notice']['show'] ) && $settings['notice']['show'] == 1 ) { ?>
 
-            <div><?php echo isset( $settings['notice']['title'] ) ? $settings['notice']['title'] : ''; ?> </div>
-            <div class="notice"><?php echo isset( $settings['notice']['message'] ) ? $settings['notice']['message'] : ''; ?></div>
+            <div>
+                <strong><?php echo isset( $settings['notice']['title'] ) ? $settings['notice']['title'] : ''; ?> </strong>
+            </div>
+            <div class="notice"><?php echo isset( $settings['notice']['message'] ) ? wpautop( esc_attr( $settings['notice']['message'] ) ) : ''; ?></div>
 		<?php } ?>
 
     </div>
 </main>
 <footer>
-    Invoice was created on a computer and is valid without the signature and seal.
+    Invoice was created on a computer and is valid without a signature and seal.
 </footer>
 </body>
 </html>

@@ -24,7 +24,7 @@ $settings = get_option( 'wpe_invoice_pdf_settings' );
 
 ?>
 <style>
-    select, option, input[type="text"] {
+    select, option, input[type="text"], textarea {
         min-width: 400px;
     }
 
@@ -97,6 +97,7 @@ $settings = get_option( 'wpe_invoice_pdf_settings' );
     </button>
 </h3><br><br><br>
 <form id="invoice_pdf_form" action="" method="post">
+	<?php wp_nonce_field( NONCE_KEY, '__pinonce' ); ?>
     <div class="wrap">
         <div class="col-sm-12">
 
@@ -146,7 +147,7 @@ $settings = get_option( 'wpe_invoice_pdf_settings' );
                     <td>
                         <input type="text" name="invoice_options[notice][title]"
                                value="<?php if ( isset( $settings['notice']['title'] ) ) {
-							       echo $settings['notice']['title'];
+							       echo esc_attr( $settings['notice']['title'] );
 						       } ?>">
                         <p class="description">To show above the message; Ex. <strong>Notice:</strong></p>
                     </td>
@@ -154,13 +155,15 @@ $settings = get_option( 'wpe_invoice_pdf_settings' );
                 <tr>
                     <th scope="row">Message</th>
                     <td>
-                        <input type="text" name="invoice_options[notice][message]"
-                               value="<?php if ( isset( $settings['notice']['message'] ) ) {
-							       echo $settings['notice']['message'];
-						       } ?>">
-                        <p class="description">To show at the bottom of the page; Ex. This is an electronic
-                            generated
-                            invoice so doesn't require any signature.</p>
+                        <textarea rows="3" name="invoice_options[notice][message]" placeholder="">
+                            <?php if ( isset( $settings['notice']['message'] ) ) {
+	                            echo esc_attr( $settings['notice']['message'] );
+                            } ?>
+                        </textarea>
+                        <p class="description">To show at the bottom of the page; <br>Ex. 1. This is an
+                            electronic
+                            generated invoice so doesn't require any signature. <br>
+                            &nbsp;&nbsp;&nbsp;&nbsp; 2. Here is another one.</p>
                     </td>
                 </tr>
                 </tbody>

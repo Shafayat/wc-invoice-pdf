@@ -20,12 +20,17 @@ use Dompdf\Options;
 define( "WPE_INVOICE_ASSETS", plugins_url( "wpe-wc-invoice-pdf/assets/" ) );
 
 class WpeWcInvoicePdf {
+	private $base_upload_dir;
 
 	/**
 	 * WpeWcInvoicePdf constructor.
 	 */
 	function __construct() {
 		require_once 'vendor/autoload.php';
+
+		$upload_dir = wp_upload_dir();
+
+		$this->base_upload_dir = $upload_dir['basedir'];
 
 
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
@@ -41,7 +46,7 @@ class WpeWcInvoicePdf {
 			'wpe_add_my_account_order_actions'
 		), 10, 2 );
 
-		add_action( 'parse_request', array( $this, 'wpe_invoice_download' ) );
+		add_action( 'init', array( $this, 'wpe_invoice_download' ) );
 
 		add_action( 'admin_head', array( $this, 'add_custom_invoice_icon_css' ) );
 
@@ -54,7 +59,12 @@ class WpeWcInvoicePdf {
 	 */
 	public function clear_pdf_cache() {
 
-		$dir = WP_CONTENT_DIR . '/uploads/wpe-invoices';
+		if ( ! current_user_can( 'manage_options' ) ) {
+			die( 'failed' );
+		}
+
+		$dir = $this->base_upload_dir . '/wpe-invoices';
+
 		if ( file_exists( $dir ) ) {
 			foreach ( scandir( $dir ) as $file ) {
 				if ( '.' === $file || '..' === $file ) {
@@ -77,9 +87,23 @@ class WpeWcInvoicePdf {
 	 * Saves customisations
 	 */
 	public function save_invoice_pdf_settings() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			die( 'failed' );
+		}
 
+		if ( ! wp_verify_nonce( $_POST['__pinonce'], NONCE_KEY ) ) {
+			die( 'failed' );
+		}
 		if ( isset( $_POST['invoice_options'] ) && $_POST['invoice_options'] ) {
-			update_option( 'wpe_invoice_pdf_settings', $_POST['invoice_options'] );
+			$data = $_POST['invoice_options'];
+
+			function validate_values( &$item, $key ) {
+				$item = esc_attr( stripslashes( $item ) );
+			}
+
+			array_walk_recursive( $data, 'validate_values' );
+
+			update_option( 'wpe_invoice_pdf_settings', $data );
 		}
 		die( 'success' );
 	}
@@ -97,7 +121,7 @@ class WpeWcInvoicePdf {
 		$order_id = $order->get_id();
 		if ( $order->has_status( 'processing' ) || $order->has_status( 'completed' ) ) {
 			$actions['name'] = array(
-				'url'    => get_site_url() . '/download-pdf-invoice?order_id=' . $order_id,
+				'url'    => site_url( '?downloadpdfinvoice=' . $order_id ),
 				'name'   => 'Invoice',
 				'action' => "invoice view",
 			);
@@ -172,11 +196,11 @@ class WpeWcInvoicePdf {
 		$output = $dompdf->output();
 		if ( $type === 'temp' ) {
 
-			wp_mkdir_p( WP_CONTENT_DIR . '/uploads/wpe-temp-invoices/' );
-			file_put_contents( WP_CONTENT_DIR . '/uploads/wpe-temp-invoices/' . $order_id . '-invoice.pdf', $output );
+			wp_mkdir_p( $this->base_upload_dir . '/wpe-temp-invoices/' );
+			file_put_contents( $this->base_upload_dir . '/wpe-temp-invoices/' . $order_id . '-invoice.pdf', $output );
 		} else {
-			wp_mkdir_p( WP_CONTENT_DIR . '/uploads/wpe-invoices/' );
-			file_put_contents( WP_CONTENT_DIR . '/uploads/wpe-invoices/' . $order_id . '-invoice.pdf', $output );
+			wp_mkdir_p( $this->base_upload_dir . '/wpe-invoices/' );
+			file_put_contents( $this->base_upload_dir . '/wpe-invoices/' . $order_id . '-invoice.pdf', $output );
 		}
 	}
 
@@ -185,14 +209,24 @@ class WpeWcInvoicePdf {
 	 */
 	public function wpe_invoice_download() {
 
-		if ( strpos( $_SERVER["REQUEST_URI"], '/download-pdf-invoice' ) !== false ) {
+		if ( isset( $_REQUEST['downloadpdfinvoice'] ) ) {
 
-			if ( ! isset( $_REQUEST['order_id'] ) ) {
-				exit();
+			$order_id = (int) $_REQUEST['downloadpdfinvoice'];
+
+			$order = wc_get_order( $order_id );
+
+			if ( $order ) {
+				$order_user_id = $order->get_user_id();
+			} else {
+				die( "Order ID doesn't exist. Please contact admin." );
 			}
-			$order_id = $_REQUEST['order_id'];
 
-			$file = WP_CONTENT_DIR . '/uploads/wpe-invoices/' . $order_id . '-invoice.pdf';
+
+			if ( ! current_user_can( 'manage_options' ) && get_current_user_id() !== $order_user_id ) {
+				die( "You don't have permission to do this!" );
+			}
+
+			$file = $this->base_upload_dir . '/wpe-invoices/' . $order_id . '-invoice.pdf';
 			if ( ! file_exists( $file ) ) {
 				$this->create_and_save_pdf( $order_id );
 			}
@@ -237,13 +271,14 @@ class WpeWcInvoicePdf {
 
 			$order_id = $order->get_id();
 
-			$file = WP_CONTENT_DIR . '/uploads/wpe-invoices/' . $order_id . '-invoice.pdf';
+			$file = $this->base_upload_dir . '/wpe-invoices/' . $order_id . '-invoice.pdf';
 			if ( ! file_exists( $file ) ) {
 				$this->create_and_save_pdf( $order_id );
 			}
 
 			$allowed_statuses = array(
 				'new_order',
+				'customer_on_hold_order',
 				'customer_invoice',
 				'customer_processing_order',
 				'customer_completed_order'

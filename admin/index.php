@@ -108,7 +108,7 @@ $settings = get_option( 'wpe_invoice_pdf_settings' );
                     <td>
                         <input type="checkbox"
                                name="invoice_options[attach_with]"
-                               value="1" <?php if ( isset( $settings['attach_with'] ) && $settings['attach_with'] == 1 ) {
+                               value="1" <?php if ( isset( $settings['attach_with'] ) && (int) $settings['attach_with'] == 1 ) {
 							echo 'checked';
 						} ?>>
                         <p class="description">Check this to attach an invoice pdf with order emails.</p>
@@ -119,7 +119,7 @@ $settings = get_option( 'wpe_invoice_pdf_settings' );
                     <td>
                         <input type="checkbox"
                                name="invoice_options[show_addon]"
-                               value="1" <?php if ( isset( $settings['show_addon'] ) && $settings['show_addon'] == 1 ) {
+                               value="1" <?php if ( isset( $settings['show_addon'] ) && (int) $settings['show_addon'] == 1 ) {
 							echo 'checked';
 						} ?>>
                         <p class="description">Check this to show product add-ons details bellow the product
@@ -136,7 +136,7 @@ $settings = get_option( 'wpe_invoice_pdf_settings' );
                     <th scope="row">Show Footer Message</th>
                     <td>
                         <input type="checkbox" name="invoice_options[notice][show]"
-                               value="1" <?php if ( isset( $settings['notice']['show'] ) && $settings['notice']['show'] == 1 ) {
+                               value="1" <?php if ( isset( $settings['notice']['show'] ) && (int) $settings['notice']['show'] == 1 ) {
 							echo 'checked';
 						} ?>>
                         <p class="description">To show a custom message at the bottom of the pdf.</p>

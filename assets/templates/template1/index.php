@@ -216,7 +216,7 @@ $customer_country  = $order->get_shipping_country() ? $order->get_shipping_count
 					//print_r($item);
 					echo esc_attr( $item->get_name() );
 					$metaInd = 0;
-					if ( isset( $settings['show_addon'] ) && $settings['show_addon'] == 1 ) {
+					if ( isset( $settings['show_addon'] ) && (int) $settings['show_addon'] == 1 ) {
 						foreach ( $item->get_formatted_meta_data() as $meta_id => $meta ) {
 							if ( $metaInd === 0 ) {
 								echo '<br><span style="font-size: .75em">[';
@@ -273,7 +273,7 @@ $customer_country  = $order->get_shipping_country() ? $order->get_shipping_count
     </table>
     <br>
     <div id="notices">
-		<?php if ( isset( $settings['notice']['show'] ) && $settings['notice']['show'] == 1 ) { ?>
+		<?php if ( isset( $settings['notice']['show'] ) && (int) $settings['notice']['show'] == 1 ) { ?>
 
             <div>
                 <strong><?php echo isset( $settings['notice']['title'] ) ? $settings['notice']['title'] : ''; ?> </strong>

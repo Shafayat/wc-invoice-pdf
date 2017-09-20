@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 use Dompdf\Dompdf;
 use Dompdf\Options;
 
-define( "WPE_INVOICE_ASSETS", plugins_url( "wpe-wc-invoice-pdf/assets/" ) );
+define( "WPE_INVOICE_ASSETS", plugins_url( "assets/", __FILE__ ) );
 
 class WpeWcInvoicePdf {
 	private $base_upload_dir;
@@ -98,7 +98,15 @@ class WpeWcInvoicePdf {
 			$data = $_POST['invoice_options'];
 
 			function validate_values( &$item, $key ) {
-				$item = esc_attr( stripslashes( $item ) );
+
+				if ( $key == 'attach_with' || $key == 'show_addon' || $key == 'show' ) {
+					$item = (int) sanitize_text_field( stripslashes( $item ) );
+
+				} elseif ( $key == 'message' ) {
+					$item = wp_kses_post( stripslashes( $item ) );
+				} else {
+					$item = sanitize_text_field( stripslashes( $item ) );
+				}
 			}
 
 			array_walk_recursive( $data, 'validate_values' );
@@ -251,7 +259,7 @@ class WpeWcInvoicePdf {
 	 * Order table custom action icon renderer
 	 */
 	function add_custom_invoice_icon_css() {
-		echo '<style>a.view.invoice::after {content:""!important;background-image: url("' . plugins_url( '/wpe-wc-invoice-pdf/assets/invoice.png' ) . '")  !important;background-repeat: no-repeat; background-position: center;}</style>';
+		echo '<style>a.view.invoice::after {content:""!important;background-image: url("' . WPE_INVOICE_ASSETS . '/invoice.png' . '")  !important;background-repeat: no-repeat; background-position: center;}</style>';
 	}
 
 	/**

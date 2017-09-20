@@ -155,11 +155,10 @@ $settings = get_option( 'wpe_invoice_pdf_settings' );
                 <tr>
                     <th scope="row">Message</th>
                     <td>
-                        <textarea rows="3" name="invoice_options[notice][message]" placeholder="">
-                            <?php if ( isset( $settings['notice']['message'] ) ) {
-	                            echo esc_attr( $settings['notice']['message'] );
-                            } ?>
-                        </textarea>
+                        <textarea rows="3" name="invoice_options[notice][message]"
+                                  placeholder=""><?php if ( isset( $settings['notice']['message'] ) ) {
+		                        echo esc_attr( $settings['notice']['message'] );
+	                        } ?></textarea>
                         <p class="description">To show at the bottom of the page; <br>Ex. 1. This is an
                             electronic
                             generated invoice so doesn't require any signature. <br>
